@@ -15,14 +15,14 @@ The build system is based on Robert Nelson's kernel build scripts and install sc
 completely inside .deb packages.
 
 These packages work by taking the initial packages from linux-dev:
-* linux-headers
-* linux-image
+* linux-headers-VER
+* linux-image-VER
 
 And creating new packages for the required parts of the firmware and dtbs gzip files from linux-dev:
-* linux-dtbs (from the "-dtbs.tar.gz")
-* linux-firmware-dtbo (from the "-firmware.tar.gz")
+* linux-dtbs-VER (from the "-dtbs.tar.gz")
+* linux-firmware-dtbo-VER (from the "-firmware.tar.gz")
 
 Then finally creates some metapackages:
-* linux-kernel (simply requires linux-image, linux-dtbs and linux-firmware-dtbo above)
+* linux-kernel-VER (simply requires linux-image, linux-dtbs and linux-firmware-dtbo above)
 * linux-kernel-boot (requires linux-kernel and installs the kernel in such a way that uboot will boot it, similar to `install-me.sh`)
 
