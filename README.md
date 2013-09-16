@@ -4,7 +4,8 @@ kernel-packaging
 Debian packages for the Linux kernel, for use on the Beagle Bone Black. Designed for a patch supporting the rtl8192 
 wifi chipset (in a separate repo, linux-dev)
 
-Currently downloads and packages the 3.8 branch of the Linux kernel from https://github.com/theojulienne/linux-dev
+Currently downloads and packages the `am33x-v3.8-ninja` branch of the Linux kernel from https://github.com/theojulienne/linux-dev
+but should work with the regular `am33x-v3.8` branch from the original `linux-dev` as well.
 
 Run all shell scripts in order (0-6), a final set of kernels will be available in the "dist" folder.
 
