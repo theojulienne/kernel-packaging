@@ -1,0 +1,81 @@
+#!/bin/bash
+
+#!/bin/bash
+
+KERNEL_VERSION="<%= version.rpartition('-')[0] %>"
+
+install_boot_files () {
+	if [ -f "/boot/uboot/SOC.sh" ] ; then
+		source "/boot/uboot/SOC.sh"
+		if [ ! "${zreladdr}" ] ; then
+			zreladdr=${load_addr}
+		fi
+	fi
+
+	echo "-----------------------------"
+	if [ -f /boot/uboot/uImage ] ; then
+		echo "Backing up uImage as uImage_bak..."
+		sudo mv -v /boot/uboot/uImage /boot/uboot/uImage_bak
+	fi
+
+	if [ -f /boot/uboot/zImage ] ; then
+		echo "Backing up zImage as zImage_bak..."
+		sudo mv -v /boot/uboot/zImage /boot/uboot/zImage_bak
+	fi
+
+	if [ -f /boot/uboot/uInitrd ] ; then
+		echo "Backing up uInitrd as uInitrd_bak..."
+		sudo mv -v /boot/uboot/uInitrd /boot/uboot/uInitrd_bak
+	fi
+
+	if [ -f /boot/uboot/initrd.img ] ; then
+		echo "Backing up initrd.img as initrd.bak..."
+		sudo mv -v /boot/uboot/initrd.img /boot/uboot/initrd.bak
+	fi
+
+	if [ ! -f /boot/initrd.img-${KERNEL_VERSION} ] ; then
+		echo "Creating /boot/initrd.img-${KERNEL_VERSION}"
+		sudo update-initramfs -c -k ${KERNEL_VERSION}
+	fi
+
+	if [ "${zreladdr}" ] ; then
+		echo "-----------------------------"
+		mkimage -A arm -O linux -T kernel -C none -a ${zreladdr} -e ${zreladdr} -n ${KERNEL_VERSION} -d /boot/vmlinuz-${KERNEL_VERSION} /boot/uboot/uImage
+	fi
+	echo "-----------------------------"
+	mkimage -A arm -O linux -T ramdisk -C none -a 0 -e 0 -n initramfs -d /boot/initrd.img-${KERNEL_VERSION} /boot/uboot/uInitrd
+
+	echo "-----------------------------"
+	cp -v /boot/vmlinuz-${KERNEL_VERSION} /boot/uboot/zImage
+	cp -v /boot/initrd.img-${KERNEL_VERSION} /boot/uboot/initrd.img
+
+#	echo "-----------------------------"
+#	ls -lh /boot/uboot/*
+#	echo "-----------------------------"
+}
+
+install_files () {
+  # DTBS
+	if [ -d /boot/uboot/dtbs_bak/ ] ; then
+		rm -rf /boot/uboot/dtbs_bak/ || true
+	fi
+
+	if [ -d /boot/uboot/dtbs/ ] ; then
+		mv /boot/uboot/dtbs/ /boot/uboot/dtbs_bak/ || true
+	fi
+
+	mkdir -p /boot/uboot/dtbs/ || true
+
+	echo "Installing DTBS"
+	cp -v /boot/dtbs-${KERNEL_VERSION}/*.dtb /boot/uboot/dtbs/ 2>/dev/null
+
+
+  ## firmware
+	echo "Installing firmware"
+	cp -v /lib/firmware-${KERNEL_VERSION}/*.dtbo /lib/firmware/ 2>/dev/null
+
+	echo "Installing kernel for uboot"
+	install_boot_files
+}
+
+install_files
