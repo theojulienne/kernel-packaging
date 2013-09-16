@@ -7,7 +7,7 @@ wifi chipset (in a separate repo, linux-dev)
 Currently downloads and packages the `am33x-v3.8-ninja` branch of the Linux kernel from https://github.com/theojulienne/linux-dev
 but should work with the regular `am33x-v3.8` branch from the original `linux-dev` as well.
 
-Run all shell scripts in order (0-6), a final set of kernels will be available in the "dist" folder.
+Run all shell scripts in order (0-6), a final set of kernel packages will be available in the "dist" folder.
 
 The kernel version used is defined in `1-build-kernel.sh`, the version details from the chosen linux-dev branch will
 be used as the versioning for all kernel packages.
